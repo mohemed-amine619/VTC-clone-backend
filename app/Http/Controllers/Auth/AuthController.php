@@ -67,10 +67,16 @@ class AuthController extends Controller
             'is_valid_email' => User::Is_Invalid_email,
             'otp_code' => User::generateOTP(8),
             'password' => Hash::make($field['password']),
+            'role' => User::Customer_Role 
         ]);
         /*  Event Sending the Email */
         SendEmailEvent::dispatch($user);
         return response(['message' => 'Your account Has Been created with success'], 200);
+    }
+    public function updateRole(Request $request)
+    {
+        DB::table('users')->where('id' , $request->userId)->update(['role' => $request->role]);
+        return response(['message' => 'role updated Successfuly'] , 200);
     }
     public function ValidateUserEmail(Request $request)
     {
@@ -117,7 +123,7 @@ class AuthController extends Controller
     public function getUsers(Request $request)
     {
         $data = DB::table('users')->select('id', 'name', 'email', 'role')->where('name', 'Like', '%'.$request->params.'%')
-            ->orWhere('email', 'Like', '%' . $request->params . '%')
+            ->orWhere('email', 'Like', '%' . $request->params . '%')->orderBy('created_at','DESC')
             ->paginate(10);
         return response($data, 200);
     }

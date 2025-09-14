@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
             'otp_code' => fake()->numberBetween(1000000,9999999),
             'password' => Hash::make('11111111'),
         ]);
+    
     }
 }

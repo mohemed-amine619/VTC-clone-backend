@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens , HasFactory , Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
 
     const Is_Valid_email = 1;
@@ -29,6 +29,7 @@ class User extends Authenticatable
         'name',
         'email',
         'otp_code',
+        'role',
         'password',
     ];
 
@@ -48,7 +49,7 @@ class User extends Authenticatable
      * @return array<string, string>
      */
 
- 
+
 
     public static function generateOTP($lenght = 6)
     {
