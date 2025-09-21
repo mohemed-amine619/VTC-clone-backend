@@ -4,45 +4,42 @@ namespace App\Http\Controllers\Vehicule;
 
 use App\Http\Controllers\Controller;
 use App\Models\Vehicule;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use PgSql\Lob;
 
 class VehiculeController extends Controller
 {
     //
-    public function getVehicule(Request $request) {
-        $vehicules = Vehicule::get();
-        return response([
-            $vehicules
-        ]);
+    public function getVehicule(Request $request)
+    {
+        $data = Vehicule::paginate(10);
+        return response($data, 200);
     }
 
     // 
-    public function addImage(Request $request) {
+    public function addImage(Request $request)
+    {
         $fields = $request->all();
-        $errors = Validator::make($fields , [
+        $errors = Validator::make($fields, [
             'id' => 'required',
-            'image' => 'required|image|max:2043'
+            'image' => 'required|mimes:jpg,jpeg,png'
         ]);
-        if($errors->fails()){
+        if ($errors->fails()) {
             return response([
                 'errors' => $errors->errors()->all(),
-            ] , 422) ;
+            ], 422);
         }
-        if($request->hasFile('image')){
-            $PreviousImage = Vehicule::where('id' , $fields['id'])->first('image');
+        if ($request->hasFile('image')) {
+            $PreviousImage = Vehicule::where('id', $fields['id'])->first('image');
             $image = $request->file('image');
-            $input['file'] = time().'.'.$image->getClientOriginalExtension();
+            $input['file'] = time() . '.' . $image->getClientOriginalExtension();
             Storage::disk('public')
-            ->put('/images/' . $input['file'] , file_get_contents($image));
-         
+                ->put('/images/' . $input['file'], file_get_contents($image));
+
             $image = File::delete(public_path(str_replace(url('/'), '', $PreviousImage->image)));
-            $imageUrl = url('/').'/storage/images/'.$input['file'];
+            $imageUrl = url('/') . '/storage/images/' . $input['file'];
 
             Vehicule::where('id', $fields['id'])->update([
                 'image' => $imageUrl
@@ -50,8 +47,8 @@ class VehiculeController extends Controller
 
             return response([
                 'message' => 'vehicule image updloaded successfully'
-            ] , 200);
-         }
+            ], 200);
+        }
     }
 
     //
@@ -93,30 +90,31 @@ class VehiculeController extends Controller
                 'errors' => $errors->errors()->all()
             ], 422);
         }
-        Vehicule::where('id' , $fields['id'])::update([
+        Vehicule::where('id', $fields['id'])->update([
             'name' => $fields['name'],
             'model' => $fields['model'],
             'price' => $fields['price'],
         ]);
         return response([
             'message' => 'vehicule Updated with success',
-        ] , 200);
+        ], 200);
     }
 
     //
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         $fields = $request->all();
         $errors = Validator::make($fields, [
             'id' => 'required',
-        ] , 200);
+        ]);
         if ($errors->fails()) {
             return response([
                 'errors' => $errors->errors()->all()
             ], 422);
         }
-        Vehicule::where('id', $fields['id'])::delete();
+        Vehicule::where('id', $fields['id'])->delete();
         return response([
             'message' => 'vehicule deleted with success',
-        ] , 200);
+        ], 200);
     }
 }
