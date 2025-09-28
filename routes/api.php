@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\MapBox\PlaceController;
 use App\Http\Controllers\Vehicule\VehiculeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/users', 'register');
     Route::post('/login', 'Login');
     Route::post('/users/verify-email', 'ValidateUserEmail');
+});
+
+Route::controller(PlaceController::class) ->group(function(){
+    Route::get('/places', 'fetchPlaces');
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
