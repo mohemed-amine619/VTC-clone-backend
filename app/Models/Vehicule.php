@@ -10,5 +10,7 @@ class Vehicule extends Model
     protected $table = 'vehicules';
     protected $fillable = ['name' , 'model' , 'price' , 'images'];
 
+
+    
     
 }
