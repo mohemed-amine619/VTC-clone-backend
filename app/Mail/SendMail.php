@@ -7,11 +7,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Address;;
+
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
-
-
 
 class SendMail extends Mailable
 {
@@ -21,9 +20,8 @@ class SendMail extends Mailable
      * Create a new message instance.
      */
     public $user;
-    public function __construct($user)
+    public function __construct(User $user)
     {
-        //
         $this->user = $user;
     }
 
@@ -33,8 +31,8 @@ class SendMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('admin@vtc-clone.com' , 'Vtc-clone'),
-            subject: 'Email Verification',
+            from:new Address('admin@gmail.com','Uber Clone'),
+            subject: 'Email verification',
         );
     }
 
@@ -45,7 +43,7 @@ class SendMail extends Mailable
     {
         return new Content(
             view: 'mail.email-verification',
-            with:['user' => $this->user]
+            with:['user'=>$this->user]
         );
     }
 

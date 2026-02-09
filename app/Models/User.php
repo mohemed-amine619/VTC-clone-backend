@@ -3,24 +3,46 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use Illuminate\Contracts\Concurrency\Driver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable,HasApiTokens,Billable;
+
+    const IS_VALID_EMAIL=1;
+
+    const IS_INVALID_EMAIL=0;
+
+    
+
+    const ADMIN_ROLE='ADMIN';
+
+    const CUSTOMER_ROLE='CUSTOMER';
+    const DRIVER_ROLE='DRIVER';
 
 
-    const Is_Valid_email = 1;
-    const Is_Invalid_email = 0;
-    const Admin_Role = 'admin';
-    const Customer_Role = 'customer';
-    const Driver_Role = 'driver';
+    
+    public static function getUserName(int $id){
+        $user=User::where('id',$id)->first();
+        return !is_null($user) ?$user->name:null;
+        
+    }
+
+
+
+    public static function getUserByEmail(string $email){
+        $user=User::where('email',$email)->first();
+        return $user;
+    }
+
+    
+
+    
 
     /**
      * The attributes that are mass assignable.
@@ -31,9 +53,27 @@ class User extends Authenticatable
         'name',
         'email',
         'otp_code',
-        'role',
         'password',
+        'role',
+        'google_id'
     ];
+
+
+    
+   public static  function generateOTP($length = 6) {
+    // Ensure the length is a positive integer
+    if ($length <= 0) {
+        return '';
+    }
+
+    // Generate a random number with the desired length
+    $otp = '';
+    for ($i = 0; $i < $length; $i++) {
+        $otp .= mt_rand(0, 9); // Append a random digit (0-9)
+    }
+
+    return $otp;
+}
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,23 +90,6 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    public function Status()
-    {
-        return $this->hasOne(DriverStatus::class , 'user_id');
-    }
-
-    public static function generateOTP($lenght = 6)
-    {
-        if ($lenght <= 0) {
-            return "";
-        }
-        $otp = "";
-        for ($i = 0; $i < $lenght; $i++) {
-            $otp .= mt_rand(0, 9);
-        }
-        return $otp;
-    }
-
     protected function casts(): array
     {
         return [

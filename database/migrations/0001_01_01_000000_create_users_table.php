@@ -9,6 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+     
+    //  - user (
+    //     name
+    //     ,email,
+    //     password,
+    //     google_id,(nullable)
+    //     is_valid_email,
+    //     role[driver,admin,customer])
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -17,10 +26,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('otp_code');
+
             $table->string('google_id')->nullable();
             $table->string('is_valid_email')->default(0);
             $table->string('role')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
+
+            $table->timestamp('email_verified_at')->nullable();        
             $table->rememberToken();
             $table->timestamps();
         });

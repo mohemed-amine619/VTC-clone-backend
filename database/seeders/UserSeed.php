@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserSeed extends Seeder
 {
     /**
@@ -14,15 +15,14 @@ class UserSeed extends Seeder
      */
     public function run(): void
     {
-        //
+        $password="123456";
         User::create([
-            'name' => 'admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('11111111'),
-            'role' =>User::Admin_Role,
-            'otp_code' => rand(10000000 , 99999999),
-            'is_valid_email' => true, 
-            'email_verified_at' => now()
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'otp_code' => '',
+            'role' => User::ADMIN_ROLE,
+            'is_valid_email' => User::IS_VALID_EMAIL,
+            'password' => bcrypt($password),
         ]);
     }
 }
